@@ -1,0 +1,383 @@
+---
+title: "BH Code Challenge"
+author: "Allan Trapp II"
+date: "7/27/2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Executive summary:
+
+1. From which region are we most likely to find the highest quality wines?
+
+If one were to randomly pick wines and define a 'high quality' wine of having at least a quality score of 6, then the answer is region C as it has the highest percent of bottles, 14.62%.  Region C has the highest average of quality scores, 6.38, and is the second largest producer of wines (1092) compared to F (1332), the largest producer.  I hypothesize that C is more of the mind, 'quality over quantity,'  as 86.9% of its wines have scores > 5.  Only 67.0% of region F's wines meet this criteria, even though it is the largest producing region.
+
+2. Please select 10 wines for the party.  What are they, and why did you select them?
+
+My objective was to ensure that diverse, high quality, red and white wines were available.  As such, I first subset the original wine dataframe into red and white lists where wine quality was either 8 or 9.  To drive diversity, I performed agglomerative hierarchical clustering with Ward's method on each list.  Groupings were solely based on the continuous attributes of fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, density, pH, sulphates, and alcohol.  This is the list of wines with ID:
+
+Color: ID-Region
+
+White: 2210-C		
+White: 3315-F		
+White: 2507-C		
+White: 3397-B		
+White: 5932-G		
+White: 4630-B		
+White: 4348-H
+Red: 1203-C		
+Red: 496-C		
+Red: 1270-H
+
+This recommendation list contains more whites as 75% of the big list is white.
+
+3. Which of the characteristics most influence wine quality?
+
+Alcohol is the most influential characteristic on wine quality.  Of all of the characteristics, it has the strongest Pearson correlation of 0.44.  More importantly, in a model with good predictive accuracy of wine quality scores (f1=0.67, recall=0.688, and precision = 0.683), it is the most important variable as determined by the decreases in Gini and accuracy scores.
+
+4. Despite his gruff exterior, it turns out that Matt Crisp, the CEO of Benson Hill, has a sweet tooth and that he only likes the sweetest of wines.  He also has knowledge of flavor and thus dislikes the “barnyard” features of wines with high free sulfur dioxide.  Taking into account Matt’s preferences, and all the other features of quality, which wine would you select for him?  Why?
+
+I would recommend that Matt have a glass of the 4630.  It has a quality score of 8 and of all high quality wines (scores of 8 or 9), this wine has the highest residual sugar, 14.8, and a low free sulfur dioxide of 22.
+
+## Data
+
+```{r}
+# Loading packages that will be leveraged in this analysis
+library(googlesheets4)
+library(dplyr)
+library(ggplot2)
+library(psych)
+library(cluster)
+library(purrr)
+library(factoextra)
+library(catboost)
+library(randomForest)
+library(caTools)
+library(caret)
+# Following line used to install catboost from github
+# devtools::install_github('catboost/catboost', subdir = 'catboost/R-package')
+
+# Sourcing supporting general R functions that I use for most projects.
+
+source('utility.R')
+```
+
+### Loading data
+
+Reading data into R from my personal google drive.  I am treating this like a 'central' data storage place to enable reproducibility of work.  This is googlesheet version of the WineData.csv that was shared through email.
+
+```{r}
+df <- googlesheets4::read_sheet('179prhCDCppqPjAlnA26FEROVqIHUR8OWwyb2QWbOfd8',
+                        sheet = 'WineData')
+```
+
+### Exploration of data
+
+Objective of this exercise is to create wine recommendations.  In the data set, ID is assumed to be the wine identifier, and ```...1``` will be removed.  The following code was my verification that the two columns are identical.
+```{r}
+head(df)
+ggplot(data = df, aes(x = ...1, y = ID)) + geom_point() + 
+  geom_abline(intercept = 0, slope =1, col='red')
+
+print(paste0('RMSE between ...1 and ID is ', f_rmse(df$...1, df$ID))) # Function may be found in 'utility.R' script
+
+sdf <- dplyr::select(df, -c('...1', 'ID'))
+head(sdf)
+```
+
+Next step of analysis is understanding the data completeness.  First, I determine if there are duplicate rows in the data set.
+```{r}
+df_summary <- f_eda(sdf)
+print(paste0("Number of unique wines = ", length(unique(df$ID)),
+      ' and number of data rows = ',nrow(df)))
+print(paste0("Number of duplicate feature rows = ", nrow(df_summary$duplicate_rows)))
+print(paste("There are", df_summary$duplicate_rows %>% n_distinct(),"vectors of traits associated with 2 or more wines."))
+```
+There are 6,497 unique ID's and rows in the complete data set --> records have not been duplicated.  However, there are wines that have the exact same quantitative/qualitative characteristics.  This raises the question: Is it possible for two wines to have the exact same characteristics?
+
+Next, I check completeness of records.  If data are sparse, this will inform whether or not certain variables will go into modeling and if imputation should be considered.  Additionally, it creates talking points with the data owners--sometimes they forget to enter data.
+```{r}
+df_summary$missing_counts
+```
+Data are complete!  No need for imputation.
+
+Third step is to investigate any correlations and distributions of variables in the data.  It appears that there are two categorical variables/factors of color and region.  Region F has the most wines, and there are more white than red wines in this study.
+```{r}
+df_summary$summaries_fact_cols
+with(data=df, table(region, color))
+```
+It also looks like there are 12 quantitative variables.  Arguably, quality is an ordinal, categorical variable as it is a human assigned value.  Note that the quality scores range between 3 and 9.
+```{r}
+df_summary$summaries_num_cols
+colnames_num <- names(df_summary$summaries_num_cols)
+print(paste0('Number of quantitative columns = ',length(colnames_num)))
+cat('quantitative variables are:', colnames_num)
+```
+
+```{r}
+psych::pairs.panels(dplyr::select(df,-c('color','region','ID','...1')), 
+                    method = "pearson", # correlation method
+                    hist.col = "#00AFBB",
+                    density = TRUE,  # show density plots
+                    ellipses = TRUE # show correlation ellipses
+)
+```
+
+For linear correlations (Pearson) to quality, alcohol content correlated the strongest (0.44) and density was second strongest (-0.31).  Residual sugars and sulphates appear to be right-skewed distributions.  Also, there's a diversity of ranges for each variable.  total.sulfur.dioxide ranges between 0 and 440 whereas citric.acid is between 0 and 1.66.  Standardization will be considered for any clustering techniques.
+
+#### Response to question 1:
+```{r}
+# Investigating quality scores
+
+df %>% dplyr::group_by(region) %>%
+  dplyr::summarise(ave_score = mean(quality, na.rm=TRUE),
+                   med_score = median(quality, na.rm=TRUE),
+                   q1 = quantile(quality, .25, na.rm=TRUE),
+                   q3 = quantile(quality, .75, na.rm=TRUE),
+                   iqr = q3-q1,
+                   stdev = sd(quality,na.rm=TRUE),
+                   n = length(quality)
+                   )
+table(df$quality)
+```
+
+Looking at regions where wine is produced, region C has the highest average quality rating of 6.38. 
+
+```{r}
+
+pmf_region_quality <- data.frame(round(with(data=df, table(region, quality))/nrow(df),4))
+pmf_region_quality <- pmf_region_quality %>% 
+  dplyr::arrange(region,desc(quality)) %>% 
+  dplyr::group_by(region) %>%
+  dplyr::mutate(cum_prob=cumsum(Freq)*100)
+
+ggplot(data=pmf_region_quality, aes(x=as.numeric(quality)+2, y=cum_prob, color=region)) + 
+  geom_line() +
+  scale_x_reverse() +
+  ylab('Percent of X >= quality and Y = region') +
+  xlab('Quality score')
+
+pmf_region_quality %>% dplyr::filter(quality==6)
+```
+
+Looking at the plot above, there is a stronger likelihood that good quality wine comes from region C as the olive color line is above all others for high values of quality.  To interpret the graphic, for the quality value of 6 in region C (olive line), 14.62 means that 14.62% of all wines had a quality of 6 or higher and originated from region C.  For quality scores of 6, 7, 8, and 9, region C always has the highest percent of wines.  An interesting point, region C does not produce the most wine, so it is not just volume driving the high joint probabilities.  In fact, 87% of region C's wines have quality scores larger than 5 whereas region F has only 67%.  See code below for these conditional probability calculations.
+
+```{r}
+# Conditional probability calculations
+df_cond <- df %>% 
+  dplyr::group_by(region, quality) %>%
+  dplyr::summarize(counts = length(quality)) %>%
+  dplyr::group_by(region) %>%
+  dplyr::mutate(reg_total = sum(counts)) %>%
+  dplyr::ungroup(region) %>%
+  dplyr::mutate(p = counts/reg_total*100)
+
+df_cond %>% 
+  dplyr::filter(quality > 5) %>%
+  dplyr::group_by(region) %>%
+  dplyr::summarize(p_cond = sum(p))
+```
+
+```{r}
+ggplot(data=df, aes(x=quality)) + geom_bar(position='stack',aes(fill=region)) 
+```
+
+## Party wine selection: Clustering of wines, response to question 2
+
+```{r}
+# Only selecting wines with a quality score of 8 or higher
+party_wines <- df %>% dplyr::filter(quality >=8)
+
+cluster_cols <- setdiff(colnames_num, 'quality')
+
+# Normalizing quantitative variables
+scale2 <- function(x, na.rm = TRUE) (x - mean(x, na.rm = na.rm)) / sd(x, na.rm)
+party_wines <- party_wines %>% 
+  dplyr::mutate_at(all_of(cluster_cols), scale2)
+
+# Creating two separate wine lists for whites and reds
+party_wines_red <- party_wines %>% dplyr::filter(color=='red')
+party_wines_white <- party_wines %>% dplyr::filter(color=='white')
+
+# Only 18 red wines have quality >=8
+dim(party_wines_red)
+# Only 180 white wines have quality >=8
+dim(party_wines_white)
+```
+
+```{r}
+# Using Agnes coefficient to determine good clustering method
+m <- c('average', 'single', 'complete', 'ward')
+names(m) <- c('average', 'single', 'complete', 'ward')
+
+# Agnes clustering function using red list
+ac <- function(x){
+  cluster::agnes(party_wines_red[,cluster_cols], method=x)$ac
+}
+
+# Agnes clustering function using white list
+ac1 <- function(x){
+  cluster::agnes(party_wines_white[,cluster_cols], method=x)$ac
+}
+purrr::map_dbl(m, ac)
+purrr::map_dbl(m, ac1)
+
+# Looks like Ward is best clustering algorithm for both list based on the Agnes coefficient.
+```
+
+```{r}
+hc_red <- cluster::agnes(party_wines_red[,cluster_cols], method = 'ward')
+hc_white <- cluster::agnes(party_wines_white[,cluster_cols], method = 'ward')
+
+# Plotting the tree diagrams
+pltree(hc_red, hang=-1, main='Dendogram of red list using Ward',xlab='Row ID')
+pltree(hc_white, cex=.5, hang=-1, main='Dendogram of white list using Ward',xlab='Row ID')
+
+# Number of clusters selected based on the dendogram
+party_wines_red <- party_wines_red %>% dplyr::mutate(cluster = cutree(as.hclust(hc_red), k=3)) 
+party_wines_white <- party_wines_white %>% dplyr::mutate(cluster = cutree(as.hclust(hc_white), k=7))
+
+# Elbow plot to determine optimal number of clusters in the Red list
+fviz_nbclust(party_wines_red[,cluster_cols], FUN = hcut, method = "wss") +
+  ggtitle("Elbow plot for red wine clustering")
+```
+
+For the red list of wines with quality score of 8 or higher, elbow method shows that 3 clusters seems reasonable.  As such, I will restrict the white list to 7 clusters to get 10 distinct groups of high quality red and white wines from which we will select diverse wines.
+
+```{r}
+
+# Elbow plot to determine optimal number of clusters in the White list
+fviz_nbclust(party_wines_white[,cluster_cols], FUN = hcut, method = "wss") +
+  ggtitle ("Elbow plot for white wine clustering")
+
+```
+
+```{r}
+with(data=party_wines_red, table(region, cluster))
+with(data=party_wines_white, table(region, cluster))
+```
+
+It seems as though our clustering algorithm has some association to where the wines originated.  For the white list, cluster 7 only has region H wines.  Cluster 5 is predominantly region G and I wines.  Cluster 4 is predominantly region A and B wines.  Cluster 2 is predominantly region F wines.  As such, I will not give any further consideration to using region as a factor in selecting the wine list for the party. 
+
+```{r}
+# Visualizing the clusters using first two principle components as x and y axes
+factoextra::fviz_cluster(list(data = party_wines_red[,cluster_cols], cluster=party_wines_red$cluster))
+factoextra::fviz_cluster(list(data = party_wines_white[,cluster_cols], cluster=party_wines_white$cluster))
+
+# Calculating centroids of each cluster
+centroids_red <- party_wines_red %>% 
+  dplyr::select(c(cluster_cols, 'cluster', 'ID')) %>%
+  dplyr::group_by(cluster) %>%
+  summarise_at(vars(-ID), mean, na.rm=TRUE)
+
+centroids_white <- party_wines_white %>% 
+  dplyr::select(c(cluster_cols, 'cluster', 'ID')) %>%
+  dplyr::group_by(cluster) %>%
+  summarise_at(vars(-ID), mean, na.rm=TRUE)
+
+# Finding the bottle of wine closest to the centoid
+r_dist <- as.matrix(stats::dist(rbind(dplyr::select(centroids_red,-cluster),
+                                      party_wines_red[,cluster_cols]),
+                                method='euclidean'))[-c(1:3),1:3]
+red_pos <- apply(r_dist,2,which.min)
+
+w_dist <- as.matrix(stats::dist(rbind(dplyr::select(centroids_white, -cluster),
+                                      party_wines_white[,cluster_cols]),
+                                method='euclidean'))[-c(1:7),1:7]
+white_pos <- apply(w_dist,2,which.min)
+
+# This is the wine list!
+party_wines_red[red_pos,c("ID", "cluster","region")]
+party_wines_white[white_pos,c("ID","cluster","region")]
+```
+
+Based the lists provided, I would recommend ID's 1203, 496, and 1270 for the red wines and ID's 2210, 3315, 2507, 3397, 5932, 4774, and 4348 for the white wines.
+
+## Attributes of a good quality wine, response to question 3
+
+```{r}
+# Building a fair, predictive model of wine quality scores 
+
+# Setting a seed so results are repeatable
+set.seed(20200727)
+
+# Splitting data into training and test sets
+df_mod <- sdf
+df_mod$quality <- factor(df_mod$quality)
+ind <- sample.split(df$ID, SplitRatio=.70)
+
+train <- subset(df_mod, ind==TRUE)
+test <- subset(df_mod, ind==FALSE)
+
+# Fitting random forest
+mod <- randomForest(quality ~ ., data=train, importance=TRUE)
+pred <- predict(mod, newdata = test)
+
+# Overall contigency table of results
+cm = table(test$quality, pred)
+
+# Calculating decision metrics for inner most quality scores as predictions of 'true' case did not happen
+# ToDo: This model is NOT properly tuned to predict the qualities of 3 and 9 which have very
+# few wines.  If the intent were to build a truly predictive model, then I would consider fixing
+# this by upsampling the minority classes or imposing case weights on the response.  Also, I would # consider additional engineered features and interactions.
+results <- NULL
+for(i in 4:8){
+  true <- test$quality==i
+  preds <- pred==i
+  tmp_table <- table(true, preds)
+  prec <- caret::precision(tmp_table, reference = true, relevant = 'TRUE')
+  rec <- caret::recall(tmp_table, reference = true, relevant = 'TRUE')
+  f1 <- caret::F_meas(tmp_table, reference = true, relevant = 'TRUE')
+  ns <- sum(true)
+  tmp_results <- data.frame('label'=i, prec, rec, f1, ns)
+  results <- rbind(results, tmp_results)
+}
+
+# Decision metrics
+f1 <- round(weighted.mean(results$f1, results$ns),3)
+rec <- round(weighted.mean(results$rec, results$ns),3)
+prec <- round(weighted.mean(results$prec, results$ns),3)
+cm
+
+print(paste0("Overall F = ",f1,', Recall = ',rec,', and Precision = ',prec ))
+results
+
+# Variable importance plots
+varImpPlot(mod)
+```
+
+When trying to assess influential wine features on quality, I modeled the quality scores and assessed what features impacted the model accuracy most.  Based on the variable importance plots, alcohol appears to be the most influential characteristic.  It is most important based on the MeanDecreaseGini and MeanDecreaseAccuracy.  Furthermore, in the EDA, I had highlighted that it was the most correlated to quality rating.
+
+## Targeted wine recommendation for Matt Crisp, response to question 4.
+
+```{r}
+party_wine_list <- c(unlist(party_wines_red[red_pos,'ID']),unlist(party_wines_white[white_pos,'ID']))
+df_picked <- df %>% dplyr::filter(ID%in%party_wine_list)
+
+# Current 10 recommended wines free.sulfur.dioxide and residual.sugar attributes
+ggplot(data=df_picked, aes(free.sulfur.dioxide, residual.sugar, color=factor(ID))) + geom_point()
+
+# Plot of all wines with high residual.sugar and high quality
+ggplot(data=df %>% dplyr::filter(quality >7 & residual.sugar >14), 
+       aes(free.sulfur.dioxide, residual.sugar, color=factor(ID))) + geom_point()
+
+party_wines_white %>% dplyr::filter(ID==4630) # ID = 4774 will be subbed out for ID = 4630 because 4774 was the original cluster 6 pick of the whites
+df %>% dplyr::filter(ID==4630)
+```
+
+Based on the plot of residual.sugar against free.sulfur.dioxide, ID = 4630 has the highest sugar content and lowest free.sulfur.dioxide score while having a quality score of 8.  The new a slightly augmented party list is now:
+
+```{r}
+list_update <- c(party_wine_list, 4630)
+list_update <- list_update[list_update!=4774]
+rbind(party_wines_white, party_wines_red) %>%
+  dplyr::filter(ID%in%list_update) %>%
+  dplyr::select(color, ID, region)
+```
+
+I would recommend that Matt Crisp have a glass of 4630.

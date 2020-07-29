@@ -1,0 +1,945 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={BH Code Challenge},
+  pdfauthor={Allan Trapp II},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{BH Code Challenge}
+\author{Allan Trapp II}
+\date{7/27/2020}
+
+\begin{document}
+\maketitle
+
+\hypertarget{executive-summary}{%
+\subsection{Executive summary:}\label{executive-summary}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  From which region are we most likely to find the highest quality
+  wines?
+\end{enumerate}
+
+If one were to randomly pick wines and define a `high quality' wine of
+having at least a quality score of 6, then the answer is region C as it
+has the highest percent of bottles, 14.62\%. Region C has the highest
+average of quality scores, 6.38, and is the second largest producer of
+wines (1092) compared to F (1332), the largest producer. I hypothesize
+that C is more of the mind, `quality over quantity,' as 86.9\% of its
+wines have scores \textgreater{} 5. Only 67.0\% of region F's wines meet
+this criteria, even though it is the largest producing region.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Please select 10 wines for the party. What are they, and why did you
+  select them?
+\end{enumerate}
+
+My objective was to ensure that diverse, high quality, red and white
+wines were available. As such, I first subset the original wine
+dataframe into red and white lists where wine quality was either 8 or 9.
+To drive diversity, I performed agglomerative hierarchical clustering
+with Ward's method on each list. Groupings were solely based on the
+continuous attributes of fixed.acidity, volatile.acidity, citric.acid,
+residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide,
+density, pH, sulphates, and alcohol. This is the list of wines with
+bottle ID:
+
+Color ID Region White 2210 C\\
+White 3315 F\\
+White 2507 C\\
+White 3397 B\\
+White 5932 G\\
+White 4774 C\\
+White 4348 H Red 1203 C\\
+Red 496 C\\
+Red 1270 H
+
+The list contains more whites as 75\% of the big list is white.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\item
+  Which of the characteristics most influence wine quality?
+\item
+  Despite his gruff exterior, it turns out that Matt Crisp, the CEO of
+  Benson Hill, has a sweet tooth and that he only likes the sweetest of
+  wines. He also has knowledge of flavor and thus dislikes the
+  ``barnyard'' features of wines with high free sulfur dioxide. Taking
+  into account Matt's preferences, and all the other features of
+  quality, which wine would you select for him? Why?
+\end{enumerate}
+
+\hypertarget{data}{%
+\subsection{Data}\label{data}}
+
+\begin{verbatim}
+## 
+## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'psych'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:ggplot2':
+## 
+##     %+%, alpha
+\end{verbatim}
+
+\begin{verbatim}
+## Welcome! Want to learn more? See two factoextra-related books at https://goo.gl/ve3WBa
+\end{verbatim}
+
+\hypertarget{loading-data}{%
+\subsubsection{Loading data}\label{loading-data}}
+
+Reading data into R from my personal google drive. I am treating this
+like a `central' data storage place to enable reproducibility of work.
+This is googlesheet version of the WineData.csv that was shared through
+email.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df <-}\StringTok{ }\NormalTok{googlesheets4}\OperatorTok{::}\KeywordTok{read_sheet}\NormalTok{(}\StringTok{'179prhCDCppqPjAlnA26FEROVqIHUR8OWwyb2QWbOfd8'}\NormalTok{,}
+                        \DataTypeTok{sheet =} \StringTok{'WineData'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Using an auto-discovered, cached token.
+## To suppress this message, modify your code or options to clearly consent to the use of a cached token.
+## See gargle's "Non-interactive auth" vignette for more details:
+## https://gargle.r-lib.org/articles/non-interactive-auth.html
+\end{verbatim}
+
+\begin{verbatim}
+## The googlesheets4 package is using a cached token for allantrapp2@gmail.com.
+\end{verbatim}
+
+\begin{verbatim}
+## Auto-refreshing stale OAuth token.
+\end{verbatim}
+
+\begin{verbatim}
+## Reading from "WineData"
+\end{verbatim}
+
+\begin{verbatim}
+## Range "'WineData'"
+\end{verbatim}
+
+\begin{verbatim}
+## New names:
+## * `` -> ...1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#df <- read.csv('~/Downloads/WineData.csv', header=T)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{exploration-of-data}{%
+\subsubsection{Exploration of data}\label{exploration-of-data}}
+
+Objective of this exercise is to create wine recommendations. In the
+data set, ID is assumed to be the wine identifier, and \texttt{...1}
+will be removed. The following code was my verification that the two
+columns are identical.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 16
+##    ...1    ID color region fixed.acidity volatile.acidity citric.acid
+##   <dbl> <dbl> <chr> <chr>          <dbl>            <dbl>       <dbl>
+## 1     1     1 red   I                7.4             0.7         0   
+## 2     2     2 red   E                7.8             0.88        0   
+## 3     3     3 red   A                7.8             0.76        0.04
+## 4     4     4 red   E               11.2             0.28        0.56
+## 5     5     5 red   I                7.4             0.7         0   
+## 6     6     6 red   I                7.4             0.66        0   
+## # ... with 9 more variables: residual.sugar <dbl>, chlorides <dbl>,
+## #   free.sulfur.dioxide <dbl>, total.sulfur.dioxide <dbl>, density <dbl>,
+## #   pH <dbl>, sulphates <dbl>, alcohol <dbl>, quality <dbl>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ df, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ ...}\DecValTok{1}\NormalTok{, }\DataTypeTok{y =}\NormalTok{ ID)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_abline}\NormalTok{(}\DataTypeTok{intercept =} \DecValTok{0}\NormalTok{, }\DataTypeTok{slope =}\DecValTok{1}\NormalTok{, }\DataTypeTok{col=}\StringTok{'red'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{bh_code_challenge_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{'RMSE between ...1 and ID is '}\NormalTok{, }\KeywordTok{f_rmse}\NormalTok{(df}\OperatorTok{$}\NormalTok{...}\DecValTok{1}\NormalTok{, df}\OperatorTok{$}\NormalTok{ID))) }\CommentTok{# Function may be found in 'utility.R' script}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "RMSE between ...1 and ID is 0"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df_mod <-}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(df, }\OperatorTok{-}\StringTok{'...1'}\NormalTok{)}
+\NormalTok{sdf <-}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(df, }\OperatorTok{-}\KeywordTok{c}\NormalTok{(}\StringTok{'...1'}\NormalTok{, }\StringTok{'ID'}\NormalTok{))}
+\KeywordTok{head}\NormalTok{(sdf)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 14
+##   color region fixed.acidity volatile.acidity citric.acid residual.sugar
+##   <chr> <chr>          <dbl>            <dbl>       <dbl>          <dbl>
+## 1 red   I                7.4             0.7         0               1.9
+## 2 red   E                7.8             0.88        0               2.6
+## 3 red   A                7.8             0.76        0.04            2.3
+## 4 red   E               11.2             0.28        0.56            1.9
+## 5 red   I                7.4             0.7         0               1.9
+## 6 red   I                7.4             0.66        0               1.8
+## # ... with 8 more variables: chlorides <dbl>, free.sulfur.dioxide <dbl>,
+## #   total.sulfur.dioxide <dbl>, density <dbl>, pH <dbl>, sulphates <dbl>,
+## #   alcohol <dbl>, quality <dbl>
+\end{verbatim}
+
+Next step of analysis is understanding the data completeness. First, I
+determine if there are duplicate rows in the data set.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df_summary <-}\StringTok{ }\KeywordTok{f_eda}\NormalTok{(sdf)}
+\KeywordTok{print}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Number of unique wines = "}\NormalTok{, }\KeywordTok{length}\NormalTok{(}\KeywordTok{unique}\NormalTok{(df}\OperatorTok{$}\NormalTok{ID)),}
+      \StringTok{' and number of data rows = '}\NormalTok{,}\KeywordTok{nrow}\NormalTok{(df)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Number of unique wines = 6497 and number of data rows = 6497"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Number of duplicate rows = "}\NormalTok{, }\KeywordTok{nrow}\NormalTok{(df_summary}\OperatorTok{$}\NormalTok{duplicate_rows)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Number of duplicate rows = 1177"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\StringTok{"There are"}\NormalTok{, df_summary}\OperatorTok{$}\NormalTok{duplicate_rows }\OperatorTok{%>%}\StringTok{ }\KeywordTok{n_distinct}\NormalTok{(),}\StringTok{"vectors of traits associated with 2 or more wines."}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "There are 992 vectors of traits associated with 2 or more wines."
+\end{verbatim}
+
+There are 6,497 unique ID's and rows in the complete data set
+--\textgreater{} records have not been duplicated. However, there are
+wines that have the exact same quantitative/qualitative characteristics.
+This raises the question: Is it possible for two wines to have the same
+characteristics?
+
+Next, I check completeness of records. If data are sparse, this will
+inform whether or not certain variables will go into modeling and if
+imputation should be considered. Additionally, it creates talking points
+with the data owners--sometimes they forget to enter data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df_summary}\OperatorTok{$}\NormalTok{missing_counts}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   color region fixed.acidity volatile.acidity citric.acid residual.sugar
+## 1     0      0             0                0           0              0
+##   chlorides free.sulfur.dioxide total.sulfur.dioxide density pH sulphates
+## 1         0                   0                    0       0  0         0
+##   alcohol quality
+## 1       0       0
+\end{verbatim}
+
+Data are complete! No need for imputation.
+
+Third step is to investigate any correlations and distributions of
+variables in the data. It appears that there are two categorical
+variables/factors of color and region. Region F has the most wines, and
+there are more white than red wines in this study.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df_summary}\OperatorTok{$}\NormalTok{summaries_fact_cols}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $color
+## 
+##   red white 
+##  1599  4898 
+## 
+## $region
+## 
+##    A    B    C    D    E    F    G    H    I 
+##  882  998 1092  334  785 1332  358  369  347
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{with}\NormalTok{(}\DataTypeTok{data=}\NormalTok{df, }\KeywordTok{table}\NormalTok{(region, color))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       color
+## region  red white
+##      A  206   676
+##      B  195   803
+##      C  333   759
+##      D   82   252
+##      E  346   439
+##      F   95  1237
+##      G  144   214
+##      H   40   329
+##      I  158   189
+\end{verbatim}
+
+It also looks like there are 12 quantitative variables. Arguably,
+quality is an ordinal, categorical variable as it is a human assigned
+value, note that the quality scores range between 3 and 9.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df_summary}\OperatorTok{$}\NormalTok{summaries_num_cols}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         fixed.acidity volatile.acidity citric.acid residual.sugar  chlorides
+## Min.         3.800000         0.080000   0.0000000       0.600000 0.00900000
+## 1st Qu.      6.400000         0.230000   0.2500000       1.800000 0.03800000
+## Median       7.000000         0.290000   0.3100000       3.000000 0.04700000
+## Mean         7.215307         0.339666   0.3186332       5.443235 0.05603386
+## 3rd Qu.      7.700000         0.400000   0.3900000       8.100000 0.06500000
+## Max.        15.900000         1.580000   1.6600000      65.800000 0.61100000
+##         free.sulfur.dioxide total.sulfur.dioxide   density       pH sulphates
+## Min.                1.00000               6.0000 0.9871100 2.720000 0.2200000
+## 1st Qu.            17.00000              77.0000 0.9923400 3.110000 0.4300000
+## Median             29.00000             118.0000 0.9948900 3.210000 0.5100000
+## Mean               30.52532             115.7446 0.9946966 3.218501 0.5312683
+## 3rd Qu.            41.00000             156.0000 0.9969900 3.320000 0.6000000
+## Max.              289.00000             440.0000 1.0389800 4.010000 2.0000000
+##         alcohol  quality
+## Min.     8.0000 3.000000
+## 1st Qu.  9.5000 5.000000
+## Median  10.3000 6.000000
+## Mean    10.4918 5.818378
+## 3rd Qu. 11.3000 6.000000
+## Max.    14.9000 9.000000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{colnames_num <-}\StringTok{ }\KeywordTok{names}\NormalTok{(df_summary}\OperatorTok{$}\NormalTok{summaries_num_cols)}
+\KeywordTok{print}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{'Number of quantitative columns = '}\NormalTok{,}\KeywordTok{length}\NormalTok{(colnames_num)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Number of quantitative columns = 12"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cat}\NormalTok{(}\StringTok{'quantitative variables are:'}\NormalTok{, colnames_num)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## quantitative variables are: fixed.acidity volatile.acidity citric.acid residual.sugar chlorides free.sulfur.dioxide total.sulfur.dioxide density pH sulphates alcohol quality
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df }\OperatorTok{%>%}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{group_by}\NormalTok{(region) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{ave_score =} \KeywordTok{mean}\NormalTok{(quality, }\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{),}
+                   \DataTypeTok{med_score =} \KeywordTok{median}\NormalTok{(quality, }\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{),}
+                   \DataTypeTok{q1 =} \KeywordTok{quantile}\NormalTok{(quality, }\FloatTok{.25}\NormalTok{, }\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{),}
+                   \DataTypeTok{q3 =} \KeywordTok{quantile}\NormalTok{(quality, }\FloatTok{.75}\NormalTok{, }\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{),}
+                   \DataTypeTok{iqr =}\NormalTok{ q3}\OperatorTok{-}\NormalTok{q1,}
+                   \DataTypeTok{stdev =} \KeywordTok{sd}\NormalTok{(quality,}\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{),}
+                   \DataTypeTok{n =} \KeywordTok{length}\NormalTok{(quality)}
+\NormalTok{                   )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` ungrouping output (override with `.groups` argument)
+\end{verbatim}
+
+\begin{verbatim}
+## # A tibble: 9 x 8
+##   region ave_score med_score    q1    q3   iqr stdev     n
+##   <chr>      <dbl>     <dbl> <dbl> <dbl> <dbl> <dbl> <int>
+## 1 A           5.34         5     5     6     1 0.588   882
+## 2 B           5.84         6     5     6     1 0.801   998
+## 3 C           6.38         6     6     7     1 0.869  1092
+## 4 D           5.39         5     5     6     1 0.665   334
+## 5 E           5.67         6     5     6     1 0.860   785
+## 6 F           5.88         6     5     6     1 0.873  1332
+## 7 G           5.97         6     5     7     2 0.965   358
+## 8 H           5.92         6     5     6     1 0.810   369
+## 9 I           5.47         5     5     6     1 0.734   347
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{table}\NormalTok{(df}\OperatorTok{$}\NormalTok{quality)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##    3    4    5    6    7    8    9 
+##   30  216 2138 2836 1079  193    5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{psych}\OperatorTok{::}\KeywordTok{pairs.panels}\NormalTok{(dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(df,}\OperatorTok{-}\KeywordTok{c}\NormalTok{(}\StringTok{'color'}\NormalTok{,}\StringTok{'region'}\NormalTok{,}\StringTok{'ID'}\NormalTok{,}\StringTok{'...1'}\NormalTok{)), }
+                    \DataTypeTok{method =} \StringTok{"pearson"}\NormalTok{, }\CommentTok{# correlation method}
+                    \DataTypeTok{hist.col =} \StringTok{"#00AFBB"}\NormalTok{,}
+                    \DataTypeTok{density =} \OtherTok{TRUE}\NormalTok{,  }\CommentTok{# show density plots}
+                    \DataTypeTok{ellipses =} \OtherTok{TRUE} \CommentTok{# show correlation ellipses}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{bh_code_challenge_files/figure-latex/unnamed-chunk-8-1.pdf}
+For linear correlations (Pearson) to quality, alcohol content correlated
+the strongest (0.44) and density was second strongest (-0.31). Residual
+sugars and sulphates appear to be right-skewed distributions. Also,
+there's a diversity of ranges for each variable. total.sulfur.dioxide
+ranges between 0 and 440 whereas citric.acid is between 0 and 1.66.
+Standardization will be considered for any clustering techniques.
+
+\hypertarget{response-to-question-1}{%
+\paragraph{Response to question 1:}\label{response-to-question-1}}
+
+Looking at regions where wine is produced, the average quality rating of
+wines comes from region C. Its mean score is 6.38.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pmf_region_quality <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\KeywordTok{round}\NormalTok{(}\KeywordTok{with}\NormalTok{(}\DataTypeTok{data=}\NormalTok{df, }\KeywordTok{table}\NormalTok{(region, quality))}\OperatorTok{/}\KeywordTok{nrow}\NormalTok{(df),}\DecValTok{4}\NormalTok{))}
+\NormalTok{pmf_region_quality <-}\StringTok{ }\NormalTok{pmf_region_quality }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{arrange}\NormalTok{(region,}\KeywordTok{desc}\NormalTok{(quality)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{group_by}\NormalTok{(region) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{cum_prob=}\KeywordTok{cumsum}\NormalTok{(Freq)}\OperatorTok{*}\DecValTok{100}\NormalTok{)}
+
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{pmf_region_quality, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{as.numeric}\NormalTok{(quality)}\OperatorTok{+}\DecValTok{2}\NormalTok{, }\DataTypeTok{y=}\NormalTok{cum_prob, }\DataTypeTok{color=}\NormalTok{region)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_reverse}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{'Percent of X >= quality and Y = region'}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{'Quality score'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{bh_code_challenge_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pmf_region_quality }\OperatorTok{%>%}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{filter}\NormalTok{(quality}\OperatorTok{==}\DecValTok{6}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 9 x 4
+## # Groups:   region [9]
+##   region quality   Freq cum_prob
+##   <fct>  <fct>    <dbl>    <dbl>
+## 1 A      6       0.0476     4.98
+## 2 B      6       0.0737    10.1 
+## 3 C      6       0.0699    14.6 
+## 4 D      6       0.0157     1.88
+## 5 E      6       0.0577     7.34
+## 6 F      6       0.0931    13.8 
+## 7 G      6       0.0239     3.93
+## 8 H      6       0.0319     4.19
+## 9 I      6       0.0231     2.57
+\end{verbatim}
+
+Looking at the plot above, there is a stronger likelihood that good
+quality wine comes from region C as the olive color line is above all
+others for high values of quality. To interpret the graphic, for the
+quality value of 6 in region C (olive line), 14.62 means that 14.62\% of
+all wines had a quality of 6 or higher and originated from region C. For
+quality scores of 6, 7, 8, and 9, region C always has the highest
+percent of wines. An interesting point, region C does not produce the
+most wine, so it is not just volume driving the high joint
+probabilities. In fact, 87\% of region C's wines have quality scores
+larger than 5 whereas region F has only 67\%.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Conditional probability calculations}
+\NormalTok{df_cond <-}\StringTok{ }\NormalTok{df }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{group_by}\NormalTok{(region, quality) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{counts =} \KeywordTok{length}\NormalTok{(quality)) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{group_by}\NormalTok{(region) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{reg_total =} \KeywordTok{sum}\NormalTok{(counts)) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{ungroup}\NormalTok{(region) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{p =}\NormalTok{ counts}\OperatorTok{/}\NormalTok{reg_total}\OperatorTok{*}\DecValTok{100}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` regrouping output by 'region' (override with `.groups` argument)
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df_cond }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{filter}\NormalTok{(quality }\OperatorTok{>}\StringTok{ }\DecValTok{5}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{group_by}\NormalTok{(region) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{p_cond =} \KeywordTok{sum}\NormalTok{(p))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` ungrouping output (override with `.groups` argument)
+\end{verbatim}
+
+\begin{verbatim}
+## # A tibble: 9 x 2
+##   region p_cond
+##   <chr>   <dbl>
+## 1 A        36.6
+## 2 B        65.6
+## 3 C        86.9
+## 4 D        36.5
+## 5 E        60.8
+## 6 F        67.0
+## 7 G        71.2
+## 8 H        73.7
+## 9 I        48.1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{df, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{quality)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{position=}\StringTok{'stack'}\NormalTok{,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{region)) }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{bh_code_challenge_files/figure-latex/unnamed-chunk-11-1.pdf}
+
+\hypertarget{party-wine-selection-clustering-of-wines-response-to-question-2}{%
+\subsection{Party wine selection: Clustering of wines, response to
+question
+2}\label{party-wine-selection-clustering-of-wines-response-to-question-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Only selecting wines with a quality score of 8 or higher}
+\NormalTok{party_wines <-}\StringTok{ }\NormalTok{df }\OperatorTok{%>%}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{filter}\NormalTok{(quality }\OperatorTok{>=}\DecValTok{8}\NormalTok{)}
+
+\NormalTok{cluster_cols <-}\StringTok{ }\KeywordTok{setdiff}\NormalTok{(colnames_num, }\StringTok{'quality'}\NormalTok{)}
+
+\CommentTok{# Normalizing quantitative variables}
+\NormalTok{scale2 <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{) (x }\OperatorTok{-}\StringTok{ }\KeywordTok{mean}\NormalTok{(x, }\DataTypeTok{na.rm =}\NormalTok{ na.rm)) }\OperatorTok{/}\StringTok{ }\KeywordTok{sd}\NormalTok{(x, na.rm)}
+\NormalTok{party_wines <-}\StringTok{ }\NormalTok{party_wines }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{mutate_at}\NormalTok{(}\KeywordTok{all_of}\NormalTok{(cluster_cols), scale2)}
+
+\CommentTok{# Creating two separate wine lists for whites and reds}
+\NormalTok{party_wines_red <-}\StringTok{ }\NormalTok{party_wines }\OperatorTok{%>%}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{filter}\NormalTok{(color}\OperatorTok{==}\StringTok{'red'}\NormalTok{)}
+\NormalTok{party_wines_white <-}\StringTok{ }\NormalTok{party_wines }\OperatorTok{%>%}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{filter}\NormalTok{(color}\OperatorTok{==}\StringTok{'white'}\NormalTok{)}
+
+\CommentTok{# Only 18 red wines have quality >=8}
+\KeywordTok{dim}\NormalTok{(party_wines_red)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 18 16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Only 180 white wines have quality >=8}
+\KeywordTok{dim}\NormalTok{(party_wines_white)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 180  16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Using Agnes coefficient to determine good clustering method}
+\NormalTok{m <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{'average'}\NormalTok{, }\StringTok{'single'}\NormalTok{, }\StringTok{'complete'}\NormalTok{, }\StringTok{'ward'}\NormalTok{)}
+\KeywordTok{names}\NormalTok{(m) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{'average'}\NormalTok{, }\StringTok{'single'}\NormalTok{, }\StringTok{'complete'}\NormalTok{, }\StringTok{'ward'}\NormalTok{)}
+
+\CommentTok{# Agnes clustering function using red list}
+\NormalTok{ac <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x)\{}
+\NormalTok{  cluster}\OperatorTok{::}\KeywordTok{agnes}\NormalTok{(party_wines_red[,cluster_cols], }\DataTypeTok{method=}\NormalTok{x)}\OperatorTok{$}\NormalTok{ac}
+\NormalTok{\}}
+
+\CommentTok{# Agnes clustering function using white list}
+\NormalTok{ac1 <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x)\{}
+\NormalTok{  cluster}\OperatorTok{::}\KeywordTok{agnes}\NormalTok{(party_wines_white[,cluster_cols], }\DataTypeTok{method=}\NormalTok{x)}\OperatorTok{$}\NormalTok{ac}
+\NormalTok{\}}
+\NormalTok{purrr}\OperatorTok{::}\KeywordTok{map_dbl}\NormalTok{(m, ac)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   average    single  complete      ward 
+## 0.6209827 0.3855310 0.7795045 0.8291297
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{purrr}\OperatorTok{::}\KeywordTok{map_dbl}\NormalTok{(m, ac1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   average    single  complete      ward 
+## 0.8323981 0.8136266 0.8855133 0.9648037
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Looks like Ward is best clustering algorithm for both list based on the Agnes coefficient.}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{hc_red <-}\StringTok{ }\NormalTok{cluster}\OperatorTok{::}\KeywordTok{agnes}\NormalTok{(party_wines_red[,cluster_cols], }\DataTypeTok{method =} \StringTok{'ward'}\NormalTok{)}
+\NormalTok{hc_white <-}\StringTok{ }\NormalTok{cluster}\OperatorTok{::}\KeywordTok{agnes}\NormalTok{(party_wines_white[,cluster_cols], }\DataTypeTok{method =} \StringTok{'ward'}\NormalTok{)}
+
+\CommentTok{# Plotting the tree diagrams}
+\KeywordTok{pltree}\NormalTok{(hc_red, }\DataTypeTok{hang=}\OperatorTok{-}\DecValTok{1}\NormalTok{, }\DataTypeTok{main=}\StringTok{'Dendogram of red list using Ward'}\NormalTok{,}\DataTypeTok{xlab=}\StringTok{'Row ID'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{bh_code_challenge_files/figure-latex/unnamed-chunk-14-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{pltree}\NormalTok{(hc_white, }\DataTypeTok{cex=}\NormalTok{.}\DecValTok{5}\NormalTok{, }\DataTypeTok{hang=}\OperatorTok{-}\DecValTok{1}\NormalTok{, }\DataTypeTok{main=}\StringTok{'Dendogram of white list using Ward'}\NormalTok{,}\DataTypeTok{xlab=}\StringTok{'Row ID'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{bh_code_challenge_files/figure-latex/unnamed-chunk-14-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Number of clusters selected based on the dendogram}
+\NormalTok{party_wines_red <-}\StringTok{ }\NormalTok{party_wines_red }\OperatorTok{%>%}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{cluster =} \KeywordTok{cutree}\NormalTok{(}\KeywordTok{as.hclust}\NormalTok{(hc_red), }\DataTypeTok{k=}\DecValTok{3}\NormalTok{)) }
+\NormalTok{party_wines_white <-}\StringTok{ }\NormalTok{party_wines_white }\OperatorTok{%>%}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{cluster =} \KeywordTok{cutree}\NormalTok{(}\KeywordTok{as.hclust}\NormalTok{(hc_white), }\DataTypeTok{k=}\DecValTok{7}\NormalTok{))}
+
+\CommentTok{# Elbow plot to determine optimal number of clusters in the Red list}
+\KeywordTok{fviz_nbclust}\NormalTok{(party_wines_red[,cluster_cols], }\DataTypeTok{FUN =}\NormalTok{ hcut, }\DataTypeTok{method =} \StringTok{"wss"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Elbow plot for red wine clustering"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{bh_code_challenge_files/figure-latex/unnamed-chunk-14-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Elbow plot to determine optimal number of clusters in the White list}
+\KeywordTok{fviz_nbclust}\NormalTok{(party_wines_white[,cluster_cols], }\DataTypeTok{FUN =}\NormalTok{ hcut, }\DataTypeTok{method =} \StringTok{"wss"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{ (}\StringTok{"Elbow plot for white wine clustering"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{bh_code_challenge_files/figure-latex/unnamed-chunk-14-4.pdf}
+For the red list of wines with quality score of 8 or higher, elbow
+method shows that 3 clusters seems reasonable. As such, I will restrict
+the white list to 7 clusters to get 10 distinct groups of high quality
+red and white wines from which we will select diverse wines.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{with}\NormalTok{(}\DataTypeTok{data=}\NormalTok{party_wines_red, }\KeywordTok{table}\NormalTok{(region, cluster))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       cluster
+## region 1 2 3
+##      C 5 4 0
+##      E 1 1 1
+##      G 1 2 0
+##      H 0 0 3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{with}\NormalTok{(}\DataTypeTok{data=}\NormalTok{party_wines_white, }\KeywordTok{table}\NormalTok{(region, cluster))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       cluster
+## region  1  2  3  4  5  6  7
+##      A  0  0  0  1  0  0  0
+##      B  3  2  0 16  0  4  0
+##      C 22  1 25  4  0 23  0
+##      E  6  0  3  0  0  2  0
+##      F  6 24  8  0  0  3  0
+##      G  0  0  0  0 14  0  0
+##      H  0  2  0  1  3  0  5
+##      I  0  0  0  0  2  0  0
+\end{verbatim}
+
+It seems as though our clustering algorithm has some association to
+where the wines originated. For the white list, cluster 7 only has
+region H wines. Cluster 5 is predominantly region G and I wines. Cluster
+4 is predominantly region A and B wines. Cluster 2 is predominantly
+region F wines. As such, I will not give any further consideration to
+using region as a factor in selecting the wine list for the party.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Visualizing the clusters using first two principle components as x and y axes}
+\NormalTok{factoextra}\OperatorTok{::}\KeywordTok{fviz_cluster}\NormalTok{(}\KeywordTok{list}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ party_wines_red[,cluster_cols], }\DataTypeTok{cluster=}\NormalTok{party_wines_red}\OperatorTok{$}\NormalTok{cluster))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{bh_code_challenge_files/figure-latex/unnamed-chunk-16-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{factoextra}\OperatorTok{::}\KeywordTok{fviz_cluster}\NormalTok{(}\KeywordTok{list}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ party_wines_white[,cluster_cols], }\DataTypeTok{cluster=}\NormalTok{party_wines_white}\OperatorTok{$}\NormalTok{cluster))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{bh_code_challenge_files/figure-latex/unnamed-chunk-16-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Calculating centroids of each cluster}
+\NormalTok{centroids_red <-}\StringTok{ }\NormalTok{party_wines_red }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\KeywordTok{c}\NormalTok{(cluster_cols, }\StringTok{'cluster'}\NormalTok{, }\StringTok{'ID'}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{group_by}\NormalTok{(cluster) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summarise_at}\NormalTok{(}\KeywordTok{vars}\NormalTok{(}\OperatorTok{-}\NormalTok{ID),}\KeywordTok{funs}\NormalTok{(}\KeywordTok{mean}\NormalTok{(.,}\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Note: Using an external vector in selections is ambiguous.
+## i Use `all_of(cluster_cols)` instead of `cluster_cols` to silence this message.
+## i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+## This message is displayed once per session.
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: `funs()` is deprecated as of dplyr 0.8.0.
+## Please use a list of either functions or lambdas: 
+## 
+##   # Simple named list: 
+##   list(mean = mean, median = median)
+## 
+##   # Auto named with `tibble::lst()`: 
+##   tibble::lst(mean, median)
+## 
+##   # Using lambdas
+##   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_warnings()` to see where this warning was generated.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{centroids_white <-}\StringTok{ }\NormalTok{party_wines_white }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\KeywordTok{c}\NormalTok{(cluster_cols, }\StringTok{'cluster'}\NormalTok{, }\StringTok{'ID'}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{group_by}\NormalTok{(cluster) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summarise_at}\NormalTok{(}\KeywordTok{vars}\NormalTok{(}\OperatorTok{-}\NormalTok{ID),}\KeywordTok{funs}\NormalTok{(}\KeywordTok{mean}\NormalTok{(.,}\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{)))}
+
+\CommentTok{# Finding the bottle of wine closest to the centoid}
+\NormalTok{r_dist <-}\StringTok{ }\KeywordTok{as.matrix}\NormalTok{(stats}\OperatorTok{::}\KeywordTok{dist}\NormalTok{(}\KeywordTok{rbind}\NormalTok{(dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(centroids_red,}\OperatorTok{-}\NormalTok{cluster),}
+\NormalTok{                                      party_wines_red[,cluster_cols]),}
+                                \DataTypeTok{method=}\StringTok{'euclidean'}\NormalTok{))[}\OperatorTok{-}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{),}\DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{]}
+\NormalTok{red_pos <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(r_dist,}\DecValTok{2}\NormalTok{,which.min)}
+
+\NormalTok{w_dist <-}\StringTok{ }\KeywordTok{as.matrix}\NormalTok{(stats}\OperatorTok{::}\KeywordTok{dist}\NormalTok{(}\KeywordTok{rbind}\NormalTok{(dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(centroids_white, }\OperatorTok{-}\NormalTok{cluster),}
+\NormalTok{                                      party_wines_white[,cluster_cols]),}
+                                \DataTypeTok{method=}\StringTok{'euclidean'}\NormalTok{))[}\OperatorTok{-}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{7}\NormalTok{),}\DecValTok{1}\OperatorTok{:}\DecValTok{7}\NormalTok{]}
+\NormalTok{white_pos <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(w_dist,}\DecValTok{2}\NormalTok{,which.min)}
+
+\CommentTok{# This is the wine list!}
+\NormalTok{party_wines_red[red_pos,}\KeywordTok{c}\NormalTok{(}\StringTok{"ID"}\NormalTok{, }\StringTok{"cluster"}\NormalTok{,}\StringTok{"region"}\NormalTok{)]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 3
+##      ID cluster region
+##   <dbl>   <int> <chr> 
+## 1  1203       1 C     
+## 2   496       2 C     
+## 3  1270       3 H
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{party_wines_white[white_pos,}\KeywordTok{c}\NormalTok{(}\StringTok{"ID"}\NormalTok{,}\StringTok{"cluster"}\NormalTok{,}\StringTok{"region"}\NormalTok{)]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 7 x 3
+##      ID cluster region
+##   <dbl>   <int> <chr> 
+## 1  2210       1 C     
+## 2  3315       2 F     
+## 3  2507       3 C     
+## 4  3397       4 B     
+## 5  5932       5 G     
+## 6  4774       6 C     
+## 7  4348       7 H
+\end{verbatim}
+
+Based the lists provided, I would recommend ID's 1203, 496, and 1270 for
+the red wines and ID's 2210, 3315, 2507, 3397, 5932, 4774, and 4348 for
+the white wines.
+
+\hypertarget{attributes-of-a-good-quality-wine-response-to-question-3}{%
+\subsection{Attributes of a good quality wine, response to question
+3}\label{attributes-of-a-good-quality-wine-response-to-question-3}}
+
+\end{document}
